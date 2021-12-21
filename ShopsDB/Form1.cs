@@ -28,7 +28,7 @@ namespace ShopsDB
             InitializeComponent();
         }
 
-
+        // Загрузка данных из файла
         private void LoadData()
         {
             try
@@ -61,7 +61,7 @@ namespace ShopsDB
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // Загрузка данных при запуске приложения
         private void Form1_Load(object sender, EventArgs e)
         {
             string path = @"Data Source=.\SQLEXPRESS;Initial Catalog=Shops;Integrated Security=True";
@@ -71,8 +71,9 @@ namespace ShopsDB
             Int32 count = (Int32)comm.ExecuteScalar();
             if (count < 1)
             {
-                if (File.Exists(@"C:\Users\winde\Desktop\ShopsDB\ShopsDB\bin\Debug\shops_excel.xlsx"))
+                if (File.Exists(@"shops_excel.xlsx"))
                     ImportDataBase();
+                else MessageBox.Show("Data file not found, empty table was created.", "Creating", MessageBoxButtons.OK, MessageBoxIcon.Question);
             }
             LoadData();
             
@@ -80,14 +81,14 @@ namespace ShopsDB
             
             sqlConnection.Close();
         }
-
+        // Импорт данных из файла
         private void ImportDataBase()
         {
             try
             {
                 string path = @"Data Source=.\SQLEXPRESS;Initial Catalog=Shops;Integrated Security=True";
                 sqlConnection = new SqlConnection(path);
-                string fileName = @"C:\Users\winde\Desktop\ShopsDB\ShopsDB\bin\Debug\shops_excel.xlsx";
+                string fileName = @"shops_excel.xlsx";
                 var sheetName = "Аркуш2";
                 DataTable data = new DataTable();
                 using (System.Data.OleDb.OleDbConnection myConnection =
@@ -119,7 +120,7 @@ namespace ShopsDB
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // Обновление данных в таблице
         private void UpdateData()
         {
             try
@@ -139,7 +140,7 @@ namespace ShopsDB
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // Работа с полями таблицы(удаление,редактирование,добавление)
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -231,7 +232,7 @@ namespace ShopsDB
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // Добавление новой записи в базу данных
         private void dataGridView1_UserAddedRow(object sender, DataGridViewRowEventArgs e)
         {
             try
@@ -251,7 +252,7 @@ namespace ShopsDB
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // Обновление поля таблицы
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -271,7 +272,7 @@ namespace ShopsDB
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // Проверка полей на корректность
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             e.Control.KeyPress -= new KeyPressEventHandler(InputControl);
@@ -287,7 +288,7 @@ namespace ShopsDB
                 }
             }
         }
-
+        // Загрузка данных из файла
         private void LoadDB_Click(object sender, EventArgs e)
         {
             try
@@ -307,7 +308,7 @@ namespace ShopsDB
             {
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            if (File.Exists(@"C:\Users\winde\Desktop\ShopsDB\ShopsDB\bin\Debug\shops_excel.xlsx"))
+            if (File.Exists(@"shops_excel.xlsx"))
             {
                 ImportDataBase();
                 LoadData();
@@ -316,7 +317,7 @@ namespace ShopsDB
                 LoadData();
 
         }
-
+        // Сохранение данных в файл
         private void SaveDB_Click(object sender, EventArgs e)
         {
             string fileName = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" +
@@ -326,8 +327,7 @@ namespace ShopsDB
             Excel.Workbook xlsWorkbook;
             Excel.Worksheet xlsWorksheet;
             object misValue = System.Reflection.Missing.Value;
-
-            // Remove the old excel report file
+            // Если файл существует - удаляем
             try
             {
                 FileInfo oldFile = new FileInfo(fileName);
@@ -405,7 +405,7 @@ namespace ShopsDB
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // Поиск по таблице
         private void SearchDB_button_Click(object sender, EventArgs e)
         {
             fieldFound = false;
@@ -450,6 +450,7 @@ namespace ShopsDB
             }
                 
         }
+        // Проверка данных на корректность
         private void InputControl(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
@@ -458,7 +459,7 @@ namespace ShopsDB
             }
 
         }
-
+        // Удаление всех данных из таблицы
         private void ClearDB_button_Click(object sender, EventArgs e)
         {
             try
@@ -483,19 +484,19 @@ namespace ShopsDB
             }
             LoadData();
         }
-
+        // Запуск пользовательского мануала
         private void UserManual_button_Click(object sender, EventArgs e)
         {
             string filename = "user_manual.pdf";
             System.Diagnostics.Process.Start(filename);
         }
-
+        // Запуск формы с информацией о разработчике
         private void DevInfo_button_Click(object sender, EventArgs e)
         {
             DeveloperForm developerForm = new DeveloperForm();
             developerForm.Show();
         }
-
+        // Обновление базы данных
         private void UpdateDB_button_Click(object sender, EventArgs e)
         {
             UpdateData();
